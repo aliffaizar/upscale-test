@@ -2,7 +2,7 @@ const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 
 dotenv.config({ path: '.env.test' })
-const { MONGO_URI } = process.env || 'mongodb://localhost:27017/test'
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/test'
 
 beforeAll(async () => {
   await mongoose.connect(MONGO_URI)
