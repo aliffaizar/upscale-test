@@ -36,13 +36,16 @@ exports.getTask = async (req, res, next) => {
 }
 
 exports.updateTask = async (req, res, next) => {
+  const { id } = req.params
   try {
-    const { id } = req.params
     const task = await Task.findByIdAndUpdate(id, req.body, { new: true })
     if (!task)
       return res.status(404).json({ message: `Task with id: ${id} not found` })
     res.json(task)
   } catch (error) {
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ message: `Task ${id} not found` })
+    }
     next(error)
   }
 }

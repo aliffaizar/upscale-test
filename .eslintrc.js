@@ -5,5 +5,6 @@ module.exports = {
     node: true,
   },
   extends: ['eslint:recommended', 'prettier'],
+  ignorePatterns: ['node_modules/', 'test/*.js'],
   rules: {},
 }

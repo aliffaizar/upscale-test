@@ -1,27 +1,19 @@
-const express = require('express')
-const morgan = require('morgan')
-const swaggerUi = require('swagger-ui-express')
+const { app } = require('./app')
+const { connect } = require('./configs/database')
+const { PORT, MONGO_URI } = require('./configs/env-config')
 
-const docs = require('../docs')
-const tasks = require('./routes/tasks')
-const { connect } = require('./configs/dastabase')
-const { createTask } = require('./controllers/task.controller')
-const { errorMiddleware } = require('./middlewares/error.middleware')
-const { PORT } = require('./configs/env-config')
+const start = async () => {
+  if (!MONGO_URI) {
+    throw new Error('MONGO_URI must be provided')
+  }
+  try {
+    await connect(MONGO_URI)
+    app.listen(PORT || 3000, () => {
+      console.log(`Server is listening on port ${PORT}`)
+    })
+  } catch (err) {
+    console.log(err)
+  }
+}
 
-const app = express()
-
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-app.use(morgan('dev'))
-
-app.use('/tasks', tasks)
-app.post('/task', createTask)
-
-app.use('/', swaggerUi.serve, swaggerUi.setup(docs))
-app.use(errorMiddleware)
-
-app.listen(PORT, async () => {
-  await connect()
-  console.log('Server is running on port 3000')
-})
+start()
